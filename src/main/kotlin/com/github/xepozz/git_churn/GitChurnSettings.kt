@@ -10,6 +10,11 @@ import com.intellij.openapi.components.Storage
 @State(name = "GitChurnSettings", storages = [Storage("git_churn.xml")])
 class GitChurnSettings : BaseState(), PersistentStateComponent<GitChurnSettings> {
     var enabled by property(true)
+    var duration1Month by property(true)
+    var duration3Months by property(false)
+    var duration6Months by property(false)
+    var duration1Year by property(false)
+    var durationFull by property(false)
 
     override fun getState() = this
     override fun loadState(state: GitChurnSettings) = copyFrom(state)

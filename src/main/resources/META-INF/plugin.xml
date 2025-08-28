@@ -14,17 +14,45 @@
     </extensions>
 
     <actions>
-        <group id="ProjectView.FileSystem" text="Git Churn" popup="true">
+        <group id="ProjectView.GitChurn" text="Git Churn" popup="true">
             <action id="ProjectView.FoldRootFiles.ToggleEnabledAction"
                     class="com.github.xepozz.git_churn.actions.ToggleEnabledAction"
                     text="Enabled"
                     description="Enables or disables showing the information">
             </action>
+            <separator text="Duration" />
+            <action id="ProjectView.FoldRootFiles.Duration1MonthAction"
+                    class="com.github.xepozz.git_churn.actions.Duration1MonthAction"
+                    text="1 Month"
+                    description="Parses history since 1 month ago">
+            </action>
+            <action id="ProjectView.FoldRootFiles.Duration3MonthsAction"
+                    class="com.github.xepozz.git_churn.actions.Duration3MonthsAction"
+                    text="3 Months"
+                    description="Parses history since 3 months ago">
+            </action>
+            <action id="ProjectView.FoldRootFiles.Duration6MonthsAction"
+                    class="com.github.xepozz.git_churn.actions.Duration6MonthsAction"
+                    text="6 Months"
+                    description="Parses history since 6 months ago">
+            </action>
+            <action id="ProjectView.FoldRootFiles.Duration1YearAction"
+                    class="com.github.xepozz.git_churn.actions.Duration1YearAction"
+                    text="1 Year"
+                    description="Parses history since 1 year ago">
+            </action>
+            <action id="ProjectView.FoldRootFiles.DurationFullAction"
+                    class="com.github.xepozz.git_churn.actions.DurationFullAction"
+                    text="Full History"
+                    description="Parses history from the beginning">
+            </action>
+
             <add-to-group
                     group-id="ProjectView.ToolWindow.SecondaryActions"
                     relative-to-action="ProjectView.ToolWindow.Sort.Actions"
                     anchor="after"
             />
         </group>
+
     </actions>
 </idea-plugin>
