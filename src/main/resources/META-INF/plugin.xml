@@ -9,7 +9,22 @@
     <resource-bundle>messages.MyBundle</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">
-        <postStartupActivity implementation="com.github.xepozz.git_churn.StartupListener" />
-        <projectViewNodeDecorator implementation="com.github.xepozz.git_churn.FileNodeDecorator" order="last" />
+        <postStartupActivity implementation="com.github.xepozz.git_churn.StartupListener"/>
+        <projectViewNodeDecorator implementation="com.github.xepozz.git_churn.FileNodeDecorator" order="last"/>
     </extensions>
+
+    <actions>
+        <group id="ProjectView.FileSystem" text="Git Churn" popup="true">
+            <action id="ProjectView.FoldRootFiles.ToggleEnabledAction"
+                    class="com.github.xepozz.git_churn.actions.ToggleEnabledAction"
+                    text="Enabled"
+                    description="Enables or disables showing the information">
+            </action>
+            <add-to-group
+                    group-id="ProjectView.ToolWindow.SecondaryActions"
+                    relative-to-action="ProjectView.ToolWindow.Sort.Actions"
+                    anchor="after"
+            />
+        </group>
+    </actions>
 </idea-plugin>

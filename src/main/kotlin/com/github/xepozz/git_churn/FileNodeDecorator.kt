@@ -18,14 +18,14 @@ import kotlin.jvm.java
 import kotlin.run
 
 class FileNodeDecorator(val project: Project) : ProjectViewNodeDecorator {
-    //    private val settings by lazy { project.getService(FsInfoSettings::class.java) }
+    private val settings by lazy { project.getService(GitChurnSettings::class.java) }
     private val fileSystemService by lazy { project.getService(GitChurnService::class.java) }
     private val projectRootManager by lazy { ProjectRootManager.getInstance(project) }
 
     override fun decorate(
         node: ProjectViewNode<*>, presentation: PresentationData
     ) {
-//        if (!settings.enabled) return
+        if (!settings.enabled) return
         if (isNodeIgnored(node)) return
 
         val psiFile = node.value
