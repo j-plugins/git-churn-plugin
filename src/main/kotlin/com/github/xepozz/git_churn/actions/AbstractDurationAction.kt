@@ -3,8 +3,8 @@ package com.github.xepozz.git_churn.actions
 import com.github.xepozz.git_churn.GitChurnService
 import com.intellij.ide.projectView.ProjectView
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.progress.currentThreadCoroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 abstract class AbstractDurationAction(action: AnActionEvent) : AbstractToggleAction(action) {
     val properties = listOf(
@@ -26,13 +26,16 @@ abstract class AbstractDurationAction(action: AnActionEvent) : AbstractToggleAct
         option.set(true)
 
         val service = project.getService(GitChurnService::class.java)
-        currentThreadCoroutineScope().launch {
-            service.refresh()
 
-            ProjectView
-                .getInstance(project)
-                .currentProjectViewPane
-                ?.updateFromRoot(true)
+        runBlocking {
+            launch {
+                service.refresh()
+
+                ProjectView
+                    .getInstance(project)
+                    .currentProjectViewPane
+                    ?.updateFromRoot(true)
+            }
         }
     }
 }
