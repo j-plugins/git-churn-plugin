@@ -10,5 +10,6 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <postStartupActivity implementation="com.github.xepozz.git_churn.startup.MyProjectActivity" />
+        <projectViewNodeDecorator implementation="com.github.xepozz.git_churn.FileNodeDecorator" order="last" />
     </extensions>
 </idea-plugin>
