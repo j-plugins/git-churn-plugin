@@ -9,23 +9,29 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.vfs.VirtualFile
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import kotlin.coroutines.suspendCoroutine
 
 @Service(Service.Level.PROJECT)
 class GitChurnService(
     val project: Project,
-    val coroutineScope: CoroutineScope,
 ) {
+    val settings: GitChurnSettings = project.getService(GitChurnSettings::class.java)
     var result = GitChurnDescriptor.EMPTY
 
     fun findDescriptor(virtualFile: VirtualFile) = result.filesInfo[virtualFile]
 
-    fun refresh() {
+    suspend fun refresh() {
+        val format = when {
+            settings.duration1Month -> """--since="1 months ago""""
+            settings.duration3Months -> """--since="3 months ago""""
+            settings.duration6Months -> """--since="6 months ago""""
+            settings.duration1Year -> """--since="1 year ago""""
+            else -> "--all"
+        }
+
         val command = GeneralCommandLine(
             listOf(
                 "git",
@@ -34,8 +40,8 @@ class GitChurnService(
                 "-M",
                 "-C",
                 "--name-only",
-//                "--format='format:'",
-//                format,
+                "--format=format:",
+                format,
             )
         )
 
@@ -44,7 +50,7 @@ class GitChurnService(
 
 //        println("command is: ${command.commandLineString}")
 
-        coroutineScope.launch(Dispatchers.IO) {
+        withContext(Dispatchers.IO) {
             val gitLogResult = executeCommand(command)
 
             result = OutputParser.parseGitLogOutput(project, gitLogResult.output)
@@ -54,7 +60,6 @@ class GitChurnService(
         }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     private suspend fun executeCommand(command: GeneralCommandLine): GitLogResult =
         suspendCoroutine { continuation ->
             val processHandler = OSProcessHandler(command)
