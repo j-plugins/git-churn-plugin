@@ -67,7 +67,7 @@ class FileNodeDecorator(val project: Project) : ProjectViewNodeDecorator {
 
             presentation.background = gradientStep(backgroundColor, redColor, fileNodeDescriptor.changeCount, maxSteps)
 
-            add(fileNodeDescriptor.changeCount.toString())
+            add(MyBundle.message("changes", fileNodeDescriptor.changeCount))
         }.apply {
             if (isNotEmpty()) {
                 val joinToString = joinToString(" | ")
@@ -78,7 +78,7 @@ class FileNodeDecorator(val project: Project) : ProjectViewNodeDecorator {
 
     fun gradientStep(fromColor: java.awt.Color, toColor: java.awt.Color, step: Int, maxSteps: Int): java.awt.Color {
         val ratio = step.toDouble() / maxSteps.toDouble()
-        val clampedRatio = ratio.coerceIn(0.0, 1.0)
+        val clampedRatio = ratio.coerceIn(0.0, 0.7)
 
         return ColorUtil.mix(fromColor, toColor, clampedRatio)
     }
