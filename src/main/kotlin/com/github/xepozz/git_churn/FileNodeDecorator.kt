@@ -3,7 +3,6 @@ package com.github.xepozz.git_churn
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.ide.projectView.ProjectViewNode
 import com.intellij.ide.projectView.ProjectViewNodeDecorator
-import com.intellij.ide.ui.ThemeListProvider
 import com.intellij.ide.util.treeView.PresentableNodeDescriptor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectRootManager
@@ -11,6 +10,7 @@ import com.intellij.openapi.vcs.FileStatus
 import com.intellij.psi.PsiFileSystemItem
 import com.intellij.psi.SmartPsiElementPointer
 import com.intellij.ui.ColorUtil
+import com.intellij.ui.JBColor
 import kotlin.apply
 import kotlin.collections.isNotEmpty
 import kotlin.collections.joinToString
@@ -23,8 +23,7 @@ class FileNodeDecorator(val project: Project) : ProjectViewNodeDecorator {
     private val projectRootManager by lazy { ProjectRootManager.getInstance(project) }
 
     override fun decorate(
-        node: ProjectViewNode<*>,
-        presentation: PresentationData
+        node: ProjectViewNode<*>, presentation: PresentationData
     ) {
 //        if (!settings.enabled) return
         if (isNodeIgnored(node)) return
@@ -32,25 +31,13 @@ class FileNodeDecorator(val project: Project) : ProjectViewNodeDecorator {
         val psiFile = node.value
         if (psiFile is PsiFileSystemItem && !psiFile.isPhysical) return
 
-        val virtualFile = node.virtualFile
-            ?: (node.equalityObject as? SmartPsiElementPointer<*>)?.virtualFile
-            ?: return
+        val virtualFile = node.virtualFile ?: (node.equalityObject as? SmartPsiElementPointer<*>)?.virtualFile ?: return
 
         if (projectRootManager.fileIndex.isExcluded(virtualFile)) return
 
         val fileNodeDescriptor = fileSystemService.findDescriptor(virtualFile) ?: return
 
-        val themeListProvider = ThemeListProvider.getInstance()
-        val themes = themeListProvider.getShownThemes().items
-        var isDarkThemeActive = false
-        themes
-            .filter { it.isInitialized }
-            .forEach {
-                if (it.isDark) {
-                    isDarkThemeActive = true
-                    return@forEach
-                }
-            }
+        var isDarkThemeActive = JBColor.isBright()
 
         val greyColor = Colors.getGreyColor(isDarkThemeActive)
         val redColor = Colors.getRedColor(isDarkThemeActive)
@@ -61,9 +48,8 @@ class FileNodeDecorator(val project: Project) : ProjectViewNodeDecorator {
 
         buildList {
             presentation.locationString?.apply { add(this) }
-            val backgroundColor = presentation.background
-                ?: (parentDescriptor as? PresentableNodeDescriptor)?.highlightColor
-                ?: greyColor
+            val backgroundColor =
+                presentation.background ?: (parentDescriptor as? PresentableNodeDescriptor)?.highlightColor ?: greyColor
 
             presentation.background = gradientStep(backgroundColor, redColor, fileNodeDescriptor.changeCount, maxSteps)
 
