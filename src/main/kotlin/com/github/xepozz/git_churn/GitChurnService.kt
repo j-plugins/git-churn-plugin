@@ -42,15 +42,15 @@ class GitChurnService(
         val projectBasePath = project.basePath
         command.workDirectory = projectBasePath?.let { File(it) }
 
-        println("command is: ${command.commandLineString}")
+//        println("command is: ${command.commandLineString}")
 
         coroutineScope.launch(Dispatchers.IO) {
             val gitLogResult = executeCommand(command)
 
             result = OutputParser.parseGitLogOutput(project, gitLogResult.output)
 
-            println("log: $gitLogResult")
-            println("churn: $result")
+//            println("log: $gitLogResult")
+//            println("churn: $result")
         }
     }
 
