@@ -11,11 +11,6 @@ import com.intellij.psi.PsiFileSystemItem
 import com.intellij.psi.SmartPsiElementPointer
 import com.intellij.ui.ColorUtil
 import com.intellij.ui.JBColor
-import kotlin.apply
-import kotlin.collections.isNotEmpty
-import kotlin.collections.joinToString
-import kotlin.jvm.java
-import kotlin.run
 
 class FileNodeDecorator(val project: Project) : ProjectViewNodeDecorator {
     private val settings by lazy { project.getService(GitChurnSettings::class.java) }
@@ -23,7 +18,8 @@ class FileNodeDecorator(val project: Project) : ProjectViewNodeDecorator {
     private val projectRootManager by lazy { ProjectRootManager.getInstance(project) }
 
     override fun decorate(
-        node: ProjectViewNode<*>, presentation: PresentationData
+        node: ProjectViewNode<*>,
+        presentation: PresentationData,
     ) {
         if (!settings.enabled) return
         if (isNodeIgnored(node)) return
