@@ -6,7 +6,7 @@
 
 <!-- Plugin description -->
 
-[GitHub](https://github.com/xepozz/caddy-plugin) | [Telegram](https://t.me/jb_plugins/102) | [Donation](https://github.com/xepozz/xepozz?tab=readme-ov-file#become-a-sponsor)
+[GitHub](https://github.com/j-plugins/git-churn-plugin) | [Telegram](https://t.me/jb_plugins/102) | [Donation](https://github.com/xepozz/xepozz?tab=readme-ov-file#become-a-sponsor)
 
 ## Git Churn
 
