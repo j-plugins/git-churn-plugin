@@ -37,14 +37,14 @@ class FileNodeDecorator(val project: Project) : ProjectViewNodeDecorator {
 
         val fileNodeDescriptor = fileSystemService.findDescriptor(virtualFile) ?: return
 
-        var isDarkThemeActive = JBColor.isBright()
+        val isDarkThemeActive = JBColor.isBright()
 
         val greyColor = Colors.getGreyColor(isDarkThemeActive)
         val redColor = Colors.getRedColor(isDarkThemeActive)
 
         val parentDescriptor = node.parentDescriptor
 
-        val maxSteps = minOf(100, fileSystemService.result.maxCount)
+        val maxSteps = maxOf(100, fileSystemService.result.maxCount)
 
         buildList {
             presentation.locationString?.apply { add(this) }
