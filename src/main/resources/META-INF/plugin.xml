@@ -9,7 +9,7 @@
     <resource-bundle>messages.MyBundle</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">
-        <postStartupActivity implementation="com.github.xepozz.git_churn.startup.MyProjectActivity" />
+        <postStartupActivity implementation="com.github.xepozz.git_churn.StartupListener" />
         <projectViewNodeDecorator implementation="com.github.xepozz.git_churn.FileNodeDecorator" order="last" />
     </extensions>
 </idea-plugin>

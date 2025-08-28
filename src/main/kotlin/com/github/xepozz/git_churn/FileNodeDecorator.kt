@@ -1,16 +1,16 @@
 package com.github.xepozz.git_churn
 
-import com.github.xepozz.git_churn.services.MyProjectService
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.ide.projectView.ProjectViewNode
 import com.intellij.ide.projectView.ProjectViewNodeDecorator
+import com.intellij.ide.ui.ThemeListProvider
+import com.intellij.ide.util.treeView.PresentableNodeDescriptor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectRootManager
-import com.intellij.openapi.util.text.StringUtil
 import com.intellij.openapi.vcs.FileStatus
-import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiFileSystemItem
 import com.intellij.psi.SmartPsiElementPointer
+import com.intellij.ui.ColorUtil
 import kotlin.apply
 import kotlin.collections.isNotEmpty
 import kotlin.collections.joinToString
@@ -19,7 +19,7 @@ import kotlin.run
 
 class FileNodeDecorator(val project: Project) : ProjectViewNodeDecorator {
     //    private val settings by lazy { project.getService(FsInfoSettings::class.java) }
-    private val fileSystemService by lazy { project.getService(MyProjectService::class.java) }
+    private val fileSystemService by lazy { project.getService(GitChurnService::class.java) }
     private val projectRootManager by lazy { ProjectRootManager.getInstance(project) }
 
     override fun decorate(
@@ -40,8 +40,32 @@ class FileNodeDecorator(val project: Project) : ProjectViewNodeDecorator {
 
         val fileNodeDescriptor = fileSystemService.findDescriptor(virtualFile) ?: return
 
+        val themeListProvider = ThemeListProvider.getInstance()
+        val themes = themeListProvider.getShownThemes().items
+        var isDarkThemeActive = false
+        themes
+            .filter { it.isInitialized }
+            .forEach {
+                if (it.isDark) {
+                    isDarkThemeActive = true
+                    return@forEach
+                }
+            }
+
+        val greyColor = Colors.getGreyColor(isDarkThemeActive)
+        val redColor = Colors.getRedColor(isDarkThemeActive)
+
+        val parentDescriptor = node.parentDescriptor
+
+        val maxSteps = minOf(100, fileSystemService.result.maxCount)
+
         buildList {
             presentation.locationString?.apply { add(this) }
+            val backgroundColor = presentation.background
+                ?: (parentDescriptor as? PresentableNodeDescriptor)?.highlightColor
+                ?: greyColor
+
+            presentation.background = gradientStep(backgroundColor, redColor, fileNodeDescriptor.changeCount, maxSteps)
 
             add(fileNodeDescriptor.changeCount.toString())
         }.apply {
@@ -50,6 +74,13 @@ class FileNodeDecorator(val project: Project) : ProjectViewNodeDecorator {
                 presentation.locationString = joinToString
             }
         }
+    }
+
+    fun gradientStep(fromColor: java.awt.Color, toColor: java.awt.Color, step: Int, maxSteps: Int): java.awt.Color {
+        val ratio = step.toDouble() / maxSteps.toDouble()
+        val clampedRatio = ratio.coerceIn(0.0, 1.0)
+
+        return ColorUtil.mix(fromColor, toColor, clampedRatio)
     }
 
     private fun isNodeIgnored(node: ProjectViewNode<*>) = node.run {

@@ -1,4 +1,4 @@
-package com.github.xepozz.git_churn.services
+package com.github.xepozz.git_churn
 
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.process.OSProcessHandler
@@ -7,7 +7,6 @@ import com.intellij.execution.process.ProcessListener
 import com.intellij.execution.process.ProcessOutputTypes
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.vfs.VirtualFile
 import kotlinx.coroutines.CoroutineScope
@@ -18,15 +17,15 @@ import java.io.File
 import kotlin.coroutines.suspendCoroutine
 
 @Service(Service.Level.PROJECT)
-class MyProjectService(
+class GitChurnService(
     val project: Project,
     val coroutineScope: CoroutineScope,
 ) {
-    var result: GitLogResult? = null
+    var result = GitChurnDescriptor.EMPTY
 
-    fun findDescriptor(virtualFile: VirtualFile) = result?.filesInfo[virtualFile]
+    fun findDescriptor(virtualFile: VirtualFile) = result.filesInfo[virtualFile]
 
-    fun callGitLog() {
+    fun refresh() {
         val command = GeneralCommandLine(
             listOf(
                 "git",
@@ -46,14 +45,12 @@ class MyProjectService(
         println("command is: ${command.commandLineString}")
 
         coroutineScope.launch(Dispatchers.IO) {
-            val result = executeCommand(command)
+            val gitLogResult = executeCommand(command)
 
-            this@MyProjectService.result = result
-            val parsed = parseGitLogOutput(result)
-            result.filesInfo = parsed
+            result = OutputParser.parseGitLogOutput(project, gitLogResult.output)
 
-            println("log: $parsed")
-            println("exit: ${result.exitCode}")
+            println("log: $gitLogResult")
+            println("churn: $result")
         }
     }
 
@@ -82,21 +79,10 @@ class MyProjectService(
 
             processHandler.startNotify()
         }
-
-    private fun parseGitLogOutput(result: GitLogResult): Map<VirtualFile, FileNodeDescriptor> {
-        val projectDir = project.guessProjectDir() ?: return emptyMap()
-
-        return result.output
-            .lines()
-            .filter { it.isNotBlank() && !it.startsWith(" ") }
-            .groupingBy { it }
-            .eachCount()
-            .mapNotNull { (path, count) ->
-                FileNodeDescriptor(
-                    projectDir.findFileByRelativePath(path) ?: return@mapNotNull null,
-                    count
-                )
-            }
-            .associateBy { it.path }
-    }
 }
+
+data class GitLogResult(
+    val output: String,
+    val exitCode: Int,
+    val isSuccess: Boolean = exitCode == 0,
+)
