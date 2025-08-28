@@ -1,9 +1,9 @@
-package com.github.xepozz.gitchurnplugin.services
+package com.github.xepozz.git_churn.services
 
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
-import com.github.xepozz.gitchurnplugin.MyBundle
+import com.github.xepozz.git_churn.MyBundle
 
 @Service(Service.Level.PROJECT)
 class MyProjectService(project: Project) {

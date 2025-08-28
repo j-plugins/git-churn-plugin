@@ -1,6 +1,6 @@
 <!-- Keep a Changelog guide -> https://keepachangelog.com -->
 
-# git-churn-plugin Changelog
+# Git Churn Changelog
 
 ## [Unreleased]
 ### Added

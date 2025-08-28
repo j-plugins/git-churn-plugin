@@ -1,4 +1,4 @@
-package com.github.xepozz.gitchurnplugin
+package com.github.xepozz.git_churn
 
 import com.intellij.DynamicBundle
 import org.jetbrains.annotations.NonNls

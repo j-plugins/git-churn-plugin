@@ -1,4 +1,4 @@
-package com.github.xepozz.gitchurnplugin.startup
+package com.github.xepozz.git_churn.startup
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
