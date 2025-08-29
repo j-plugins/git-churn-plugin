@@ -1,10 +1,7 @@
 package com.github.xepozz.git_churn.actions
 
-import com.github.xepozz.git_churn.GitChurnService
-import com.intellij.ide.projectView.ProjectView
+import com.github.xepozz.git_churn.listener.GitChurnListener
 import com.intellij.openapi.actionSystem.AnActionEvent
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 abstract class AbstractDurationAction(action: AnActionEvent) : AbstractToggleAction(action) {
     val properties = listOf(
@@ -25,17 +22,6 @@ abstract class AbstractDurationAction(action: AnActionEvent) : AbstractToggleAct
             .forEach { it.set(false) }
         option.set(true)
 
-        val service = project.getService(GitChurnService::class.java)
-
-        runBlocking {
-            launch {
-                service.refresh()
-
-                ProjectView
-                    .getInstance(project)
-                    .currentProjectViewPane
-                    ?.updateFromRoot(true)
-            }
-        }
+        GitChurnListener.fireSettingsUpdated()
     }
 }

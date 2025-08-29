@@ -9,10 +9,24 @@
     <resource-bundle>messages.MyBundle</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">
-        <postStartupActivity implementation="com.github.xepozz.git_churn.StartupListener"/>
+        <postStartupActivity implementation="com.github.xepozz.git_churn.listener.StartupListener"/>
         <projectViewNodeDecorator implementation="com.github.xepozz.git_churn.FileNodeDecorator" order="last"/>
+
+        <applicationService serviceImplementation="com.github.xepozz.git_churn.config.GitChurnConfigSettings"/>
+        <applicationConfigurable
+                id="GitChurnConfigurable"
+                parentId="tools"
+                displayName="Git Churn"
+                instance="com.github.xepozz.git_churn.config.GitChurnConfigurable"
+        />
     </extensions>
 
+    <projectListeners>
+        <listener
+                topic="com.github.xepozz.git_churn.listener.GitChurnListener"
+                class="com.github.xepozz.git_churn.listener.GitChurnUpdater"
+        />
+    </projectListeners>
     <actions>
         <group id="ProjectView.GitChurn" text="Git Churn" popup="true">
             <action id="ProjectView.GitChurn.ToggleEnabledAction"
@@ -20,7 +34,7 @@
                     text="Enabled"
                     description="Enables or disables showing the information">
             </action>
-            <separator text="Duration" />
+            <separator text="Duration"/>
             <action id="ProjectView.GitChurn.Duration1MonthAction"
                     class="com.github.xepozz.git_churn.actions.Duration1MonthAction"
                     text="1 Month"

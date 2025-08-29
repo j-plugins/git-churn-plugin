@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+### Added
+
+- Configuration page
+- Excluded patterns
+
 ## [2025.0.5] - 2025-08-28
 
 ### Added

@@ -1,5 +1,7 @@
 package com.github.xepozz.git_churn
 
+import com.github.xepozz.git_churn.config.GitChurnConfigSettings
+
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.process.OSProcessHandler
 import com.intellij.execution.process.ProcessEvent
@@ -18,7 +20,7 @@ import kotlin.coroutines.suspendCoroutine
 class GitChurnService(
     val project: Project,
 ) {
-    val settings: GitChurnSettings = project.getService(GitChurnSettings::class.java)
+    private val settings by lazy { GitChurnConfigSettings.getInstance() }
     var result = GitChurnDescriptor.EMPTY
 
     fun findDescriptor(virtualFile: VirtualFile) = result.filesInfo[virtualFile]

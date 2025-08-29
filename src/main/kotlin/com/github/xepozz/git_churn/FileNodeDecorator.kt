@@ -1,5 +1,7 @@
 package com.github.xepozz.git_churn
 
+import com.github.xepozz.git_churn.config.GitChurnConfigSettings
+
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.ide.projectView.ProjectViewNode
 import com.intellij.ide.projectView.ProjectViewNodeDecorator
@@ -13,7 +15,7 @@ import com.intellij.ui.ColorUtil
 import com.intellij.ui.JBColor
 
 class FileNodeDecorator(val project: Project) : ProjectViewNodeDecorator {
-    private val settings by lazy { project.getService(GitChurnSettings::class.java) }
+    private val settings by lazy { GitChurnConfigSettings.getInstance() }
     private val fileSystemService by lazy { project.getService(GitChurnService::class.java) }
     private val projectRootManager by lazy { ProjectRootManager.getInstance(project) }
 
@@ -32,6 +34,7 @@ class FileNodeDecorator(val project: Project) : ProjectViewNodeDecorator {
         if (projectRootManager.fileIndex.isExcluded(virtualFile)) return
 
         val fileNodeDescriptor = fileSystemService.findDescriptor(virtualFile) ?: return
+        if (fileNodeDescriptor.changeCount == 0) return
 
         val isDarkThemeActive = JBColor.isBright()
 
@@ -44,8 +47,9 @@ class FileNodeDecorator(val project: Project) : ProjectViewNodeDecorator {
 
         buildList {
             presentation.locationString?.apply { add(this) }
-            val backgroundColor =
-                presentation.background ?: (parentDescriptor as? PresentableNodeDescriptor)?.highlightColor ?: greyColor
+            val backgroundColor = presentation.background
+                ?: (parentDescriptor as? PresentableNodeDescriptor)?.highlightColor
+                ?: greyColor
 
             presentation.background = gradientStep(backgroundColor, redColor, fileNodeDescriptor.changeCount, maxSteps)
 

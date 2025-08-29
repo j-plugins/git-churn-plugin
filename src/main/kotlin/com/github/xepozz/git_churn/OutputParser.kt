@@ -1,10 +1,14 @@
 package com.github.xepozz.git_churn
 
+import com.github.xepozz.git_churn.config.GitChurnConfigSettings
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.vfs.VirtualFile
+import org.apache.commons.io.FilenameUtils
 
 object OutputParser {
+    private val settings by lazy { GitChurnConfigSettings.getInstance() }
+
     fun parseGitLogOutput(project: Project, output: String): GitChurnDescriptor {
         val projectDir = project.guessProjectDir() ?: return GitChurnDescriptor.EMPTY
 
@@ -22,14 +26,28 @@ object OutputParser {
                 result.maxCount = maxOf(result.maxCount, count)
                 result.filesInfo[virtualFile] = FileNodeDescriptor(
                     path = virtualFile,
-                    changeCount = count
+                    changeCount = count,
                 )
             }
         }
 
+        filterIgnored(result, project)
         addDirectoriesWithChurn(result, projectDir)
 
         return result
+    }
+
+    private fun filterIgnored(
+        result: GitChurnDescriptor,
+        project: Project
+    ) {
+        val projectPath = "${project.basePath}/"
+        result.filesInfo = result.filesInfo
+            .filter { fileInfo ->
+                val filePath = fileInfo.key.path.substringAfter(projectPath)
+
+                !settings.excludePatterns.any { FilenameUtils.wildcardMatch(filePath, it) }
+            }.toMutableMap()
     }
 
     private fun addDirectoriesWithChurn(result: GitChurnDescriptor, projectDir: VirtualFile) {
@@ -57,7 +75,7 @@ object OutputParser {
                 maxCount = maxOf(maxCount, changeCount)
                 filesInfo[directory] = FileNodeDescriptor(
                     path = directory,
-                    changeCount = changeCount
+                    changeCount = changeCount,
                 )
             }
 

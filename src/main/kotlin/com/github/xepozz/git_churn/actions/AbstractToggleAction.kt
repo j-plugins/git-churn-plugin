@@ -1,6 +1,7 @@
 package com.github.xepozz.git_churn.actions
 
-import com.github.xepozz.git_churn.GitChurnSettings
+import com.github.xepozz.git_churn.config.GitChurnConfigSettings
+
 import com.intellij.ide.projectView.ProjectView
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ToggleOptionAction
@@ -9,7 +10,8 @@ import kotlin.reflect.KMutableProperty0
 
 abstract class AbstractToggleAction(action: AnActionEvent) : ToggleOptionAction.Option {
     val project: Project = action.project!!
-    val settings: GitChurnSettings = project.getService(GitChurnSettings::class.java)
+    protected val settings by lazy { GitChurnConfigSettings.getInstance() }
+    private val projectView by lazy { ProjectView.getInstance(project) }
 
     override fun isEnabled() = settings.enabled
 
@@ -21,12 +23,7 @@ abstract class AbstractToggleAction(action: AnActionEvent) : ToggleOptionAction.
         option.set(selected)
 
         if (updated) {
-            project.let { project ->
-                ProjectView
-                    .getInstance(project)
-                    .currentProjectViewPane
-                    ?.updateFromRoot(true)
-            }
+            projectView.refresh()
         }
     }
 
