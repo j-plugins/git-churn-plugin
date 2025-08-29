@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [2025.0.7] - 2025-08-29
+
 ### Added
 
 - Configuration page
@@ -15,5 +17,6 @@
 
 - Initial scaffold created from [IntelliJ Platform Plugin Template](https://github.com/JetBrains/intellij-platform-plugin-template)
 
-[Unreleased]: https://github.com/j-plugins/git-churn-plugin/compare/v2025.0.5...HEAD
+[Unreleased]: https://github.com/j-plugins/git-churn-plugin/compare/v2025.0.7...HEAD
+[2025.0.7]: https://github.com/j-plugins/git-churn-plugin/compare/v2025.0.5...v2025.0.7
 [2025.0.5]: https://github.com/j-plugins/git-churn-plugin/commits/v2025.0.5
