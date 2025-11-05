@@ -34,6 +34,11 @@
                     text="Enabled"
                     description="Enables or disables showing the information">
             </action>
+            <action id="ProjectView.GitChurn.ColoringAction"
+                    class="com.github.xepozz.git_churn.actions.ColoringAction"
+                    text="Colors"
+                    description="Highlight files in Project View based on churn">
+            </action>
             <separator text="Duration"/>
             <action id="ProjectView.GitChurn.Duration1MonthAction"
                     class="com.github.xepozz.git_churn.actions.Duration1MonthAction"

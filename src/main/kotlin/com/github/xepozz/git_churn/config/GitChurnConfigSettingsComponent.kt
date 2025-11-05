@@ -23,7 +23,7 @@ class GitChurnConfigSettingsComponent() {
     private val excludePatternsTable = TableView(excludePatternsModel).apply {
         preferredScrollableViewportSize = Dimension(400, 200)
         setShowGrid(true)
-        setStriped(true)
+        isStriped = true
     }
     private val maxHistoryDaysField: JBTextField = JBTextField()
     private val tableToolbar = ToolbarDecorator.createDecorator(excludePatternsTable)
@@ -37,6 +37,11 @@ class GitChurnConfigSettingsComponent() {
                 .onApply { settings.enabled = enabledCheckbox.isSelected }
                 .bindSelected(settings::enabled)
                 .component
+        }
+        row {
+            checkBox("Colors")
+                .comment("Highlight files in Project View based on churn")
+                .bindSelected(settings::coloring)
         }
         separator()
         row {

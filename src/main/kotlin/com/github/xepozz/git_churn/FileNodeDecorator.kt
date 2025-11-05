@@ -47,11 +47,18 @@ class FileNodeDecorator(val project: Project) : ProjectViewNodeDecorator {
 
         buildList {
             presentation.locationString?.apply { add(this) }
-            val backgroundColor = presentation.background
-                ?: (parentDescriptor as? PresentableNodeDescriptor)?.highlightColor
-                ?: greyColor
+            if (settings.coloring) {
+                val backgroundColor = presentation.background
+                    ?: (parentDescriptor as? PresentableNodeDescriptor)?.highlightColor
+                    ?: greyColor
 
-            presentation.background = gradientStep(backgroundColor, redColor, fileNodeDescriptor.changeCount, maxSteps)
+                presentation.background = gradientStep(
+                    backgroundColor,
+                    redColor,
+                    fileNodeDescriptor.changeCount,
+                    maxSteps,
+                )
+            }
 
             add(MyBundle.message("changes", fileNodeDescriptor.changeCount))
         }.apply {
