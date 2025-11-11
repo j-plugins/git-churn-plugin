@@ -60,7 +60,7 @@ class FileNodeDecorator(val project: Project) : ProjectViewNodeDecorator {
                 )
             }
 
-            add(MyBundle.message("changes", fileNodeDescriptor.changeCount))
+            add(GitChurnBundle.message("changes", fileNodeDescriptor.changeCount))
         }.apply {
             if (isNotEmpty()) {
                 val joinToString = joinToString(" | ")
