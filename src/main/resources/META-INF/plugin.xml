@@ -66,6 +66,10 @@
                     relative-to-action="ProjectView.ToolWindow.Sort.Actions"
                     anchor="after"
             />
+            <add-to-group
+                    group-id="VcsGroups"
+                    anchor="last"
+            />
         </group>
     </actions>
 </idea-plugin>
