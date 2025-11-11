@@ -13,7 +13,7 @@ abstract class AbstractToggleAction(action: AnActionEvent) : ToggleOptionAction.
     protected val settings by lazy { GitChurnConfigSettings.getInstance() }
     private val projectView by lazy { ProjectView.getInstance(project) }
 
-    override fun isEnabled() = settings.enabled
+    override fun isAlwaysVisible() = true
 
     override fun isSelected() = option.get()
 

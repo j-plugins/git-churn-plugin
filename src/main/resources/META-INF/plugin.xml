@@ -37,7 +37,7 @@
     </projectListeners>
 
     <actions>
-        <group id="ProjectView.GitChurn" popup="true">
+        <group id="ProjectView.GitChurn" popup="true" compact="false">
             <action id="ProjectView.GitChurn.ToggleEnabledAction"
                     class="com.github.xepozz.git_churn.actions.ToggleEnabledAction">
             </action>
