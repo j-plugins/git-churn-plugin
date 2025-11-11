@@ -9,14 +9,22 @@
     <resource-bundle>messages.GitChurnBundle</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">
-        <postStartupActivity implementation="com.github.xepozz.git_churn.listener.StartupListener"/>
-        <projectViewNodeDecorator implementation="com.github.xepozz.git_churn.FileNodeDecorator" order="last"/>
+        <postStartupActivity
+                implementation="com.github.xepozz.git_churn.listener.StartupListener"
+        />
+        <projectViewNodeDecorator
+                order="last"
+                implementation="com.github.xepozz.git_churn.FileNodeDecorator"
+        />
 
-        <applicationService serviceImplementation="com.github.xepozz.git_churn.config.GitChurnConfigSettings"/>
+        <applicationService
+                serviceImplementation="com.github.xepozz.git_churn.config.GitChurnConfigSettings"
+        />
         <applicationConfigurable
                 id="GitChurnConfigurable"
                 parentId="tools"
-                displayName="Git Churn"
+                key="plugin.title"
+                bundle="messages.GitChurnBundle"
                 instance="com.github.xepozz.git_churn.config.GitChurnConfigurable"
         />
     </extensions>
@@ -27,43 +35,30 @@
                 class="com.github.xepozz.git_churn.listener.GitChurnUpdater"
         />
     </projectListeners>
+
     <actions>
-        <group id="ProjectView.GitChurn" text="Git Churn" popup="true">
+        <group id="ProjectView.GitChurn" popup="true">
             <action id="ProjectView.GitChurn.ToggleEnabledAction"
-                    class="com.github.xepozz.git_churn.actions.ToggleEnabledAction"
-                    text="Enabled"
-                    description="Enables or disables showing the information">
+                    class="com.github.xepozz.git_churn.actions.ToggleEnabledAction">
             </action>
             <action id="ProjectView.GitChurn.ColoringAction"
-                    class="com.github.xepozz.git_churn.actions.ColoringAction"
-                    text="Colors"
-                    description="Highlight files in Project View based on churn">
+                    class="com.github.xepozz.git_churn.actions.ColoringAction">
             </action>
-            <separator text="Duration"/>
+            <separator key="separator.duration"/>
             <action id="ProjectView.GitChurn.Duration1MonthAction"
-                    class="com.github.xepozz.git_churn.actions.Duration1MonthAction"
-                    text="1 Month"
-                    description="Parses history since 1 month ago">
+                    class="com.github.xepozz.git_churn.actions.Duration1MonthAction">
             </action>
             <action id="ProjectView.GitChurn.Duration3MonthsAction"
-                    class="com.github.xepozz.git_churn.actions.Duration3MonthsAction"
-                    text="3 Months"
-                    description="Parses history since 3 months ago">
+                    class="com.github.xepozz.git_churn.actions.Duration3MonthsAction">
             </action>
             <action id="ProjectView.GitChurn.Duration6MonthsAction"
-                    class="com.github.xepozz.git_churn.actions.Duration6MonthsAction"
-                    text="6 Months"
-                    description="Parses history since 6 months ago">
+                    class="com.github.xepozz.git_churn.actions.Duration6MonthsAction">
             </action>
             <action id="ProjectView.GitChurn.Duration1YearAction"
-                    class="com.github.xepozz.git_churn.actions.Duration1YearAction"
-                    text="1 Year"
-                    description="Parses history since 1 year ago">
+                    class="com.github.xepozz.git_churn.actions.Duration1YearAction">
             </action>
             <action id="ProjectView.GitChurn.DurationFullAction"
-                    class="com.github.xepozz.git_churn.actions.DurationFullAction"
-                    text="Full History"
-                    description="Parses history from the beginning">
+                    class="com.github.xepozz.git_churn.actions.DurationFullAction">
             </action>
 
             <add-to-group
@@ -72,6 +67,5 @@
                     anchor="after"
             />
         </group>
-
     </actions>
 </idea-plugin>
