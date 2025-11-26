@@ -12,6 +12,5 @@ data class GitChurnDescriptor(
 }
 
 data class FileNodeDescriptor(
-    val path: VirtualFile,
     val changeCount: Int,
 )

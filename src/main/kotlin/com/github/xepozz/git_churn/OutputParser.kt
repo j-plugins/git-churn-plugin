@@ -25,7 +25,6 @@ object OutputParser {
             if (virtualFile != null && virtualFile.exists()) {
                 result.maxCount = maxOf(result.maxCount, count)
                 result.filesInfo[virtualFile] = FileNodeDescriptor(
-                    path = virtualFile,
                     changeCount = count,
                 )
             }
@@ -74,7 +73,6 @@ object OutputParser {
                 val changeCount = findMaxChangeCountForDirectory(directory, filesInfo)
                 maxCount = maxOf(maxCount, changeCount)
                 filesInfo[directory] = FileNodeDescriptor(
-                    path = directory,
                     changeCount = changeCount,
                 )
             }
