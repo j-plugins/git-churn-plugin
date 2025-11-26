@@ -36,7 +36,7 @@ class FileNodeDecorator(val project: Project) : ProjectViewNodeDecorator {
         val fileNodeDescriptor = fileSystemService.findDescriptor(virtualFile) ?: return
         if (fileNodeDescriptor.changeCount == 0) return
 
-        val isDarkThemeActive = JBColor.isBright()
+        val isDarkThemeActive = !JBColor.isBright()
 
         val greyColor = Colors.getGreyColor(isDarkThemeActive)
         val redColor = Colors.getRedColor(isDarkThemeActive)
@@ -52,12 +52,14 @@ class FileNodeDecorator(val project: Project) : ProjectViewNodeDecorator {
                     ?: (parentDescriptor as? PresentableNodeDescriptor)?.highlightColor
                     ?: greyColor
 
-                presentation.background = gradientStep(
+                val gradientColor = gradientStep(
                     backgroundColor,
                     redColor,
                     fileNodeDescriptor.changeCount,
                     maxSteps,
                 )
+
+                presentation.background = gradientColor
             }
 
             add(GitChurnBundle.message("changes", fileNodeDescriptor.changeCount))
@@ -71,7 +73,7 @@ class FileNodeDecorator(val project: Project) : ProjectViewNodeDecorator {
 
     fun gradientStep(fromColor: java.awt.Color, toColor: java.awt.Color, step: Int, maxSteps: Int): java.awt.Color {
         val ratio = step.toDouble() / maxSteps.toDouble()
-        val clampedRatio = ratio.coerceIn(0.0, 0.7)
+        val clampedRatio = ratio.coerceIn(0.05, 1.0)
 
         return ColorUtil.mix(fromColor, toColor, clampedRatio)
     }
