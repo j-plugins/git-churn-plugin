@@ -60,6 +60,10 @@
             <action id="ProjectView.GitChurn.DurationFullAction"
                     class="com.github.xepozz.git_churn.actions.DurationFullAction">
             </action>
+            <separator/>
+            <action id="ProjectView.GitChurn.OpenSettingsAction"
+                    class="com.github.xepozz.git_churn.actions.OpenSettingsAction">
+            </action>
 
             <add-to-group
                     group-id="ProjectView.ToolWindow.SecondaryActions"
