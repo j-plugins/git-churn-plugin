@@ -20,7 +20,7 @@ class GitChurnConfigSettings :  BaseState(), PersistentStateComponent<GitChurnCo
     var duration1Year by property(false)
     var durationFull by property(false)
 
-    var coloring by property(false)
+    var coloring by property(true)
 
     var excludePatterns: MutableList<String> by property(excludedDefaults) { it == excludedDefaults }
     var maxHistoryDays: Int = 30
