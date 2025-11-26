@@ -8,6 +8,7 @@ import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.LabelPosition
 import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.builder.toMutableProperty
 import com.intellij.ui.table.TableView
 import com.intellij.util.ui.ListTableModel
 import java.awt.Dimension
@@ -48,17 +49,17 @@ class GitChurnConfigSettingsComponent() {
             cell(tableToolbar)
                 .align(Align.FILL)
                 .label("Exclude patterns:", LabelPosition.TOP)
-//                .bind(
-//                    {
-//                        println("getter ${excludePatternsModel.items} ${settings.excludePatterns}")
-//                        excludePatternsModel.items
-//                    },
-//                    { pane, value ->
-//                        println("call setter $value, -- ${excludePatternsModel.items} -- ${settings.excludePatterns}")
-//                        excludePatternsModel.items = value
-//                    },
-//                    settings::excludePatterns.toMutableProperty()
-//                )
+                .comment("Exclude files from churn highlighting. Wildcards are supported")
+                .bind(
+                    {
+                        val map = excludePatternsModel.items.map { it.value }
+                        map.toMutableList()
+                    },
+                    { pane, value ->
+                        excludePatternsModel.items = value.map { StringColumn(it) }
+                    },
+                    settings::excludePatterns.toMutableProperty()
+                )
         }.enabled(enabledCheckbox.isSelected)
     }
 
