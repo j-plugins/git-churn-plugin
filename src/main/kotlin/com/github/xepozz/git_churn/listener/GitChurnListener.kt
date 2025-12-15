@@ -14,7 +14,6 @@ interface GitChurnListener {
         )
 
         fun fireSettingsUpdated() {
-            println("trigger update")
             ApplicationManager.getApplication().messageBus
                 .syncPublisher(TOPIC)
                 .onSettingsUpdated()

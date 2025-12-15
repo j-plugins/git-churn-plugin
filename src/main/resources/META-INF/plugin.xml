@@ -27,6 +27,12 @@
                 bundle="messages.GitChurnBundle"
                 instance="com.github.xepozz.git_churn.config.GitChurnConfigurable"
         />
+        <notificationGroup
+                id="Git Churn"
+                displayType="BALLOON"
+                hideFromSettings="true"
+                isLogByDefault="true"
+        />
     </extensions>
 
     <projectListeners>

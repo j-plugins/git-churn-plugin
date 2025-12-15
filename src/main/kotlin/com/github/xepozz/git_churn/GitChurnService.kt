@@ -1,20 +1,19 @@
 package com.github.xepozz.git_churn
 
 import com.github.xepozz.git_churn.config.GitChurnConfigSettings
-
 import com.intellij.execution.configurations.GeneralCommandLine
+import com.intellij.execution.process.CapturingProcessAdapter
 import com.intellij.execution.process.OSProcessHandler
 import com.intellij.execution.process.ProcessEvent
 import com.intellij.execution.process.ProcessListener
-import com.intellij.execution.process.ProcessOutputTypes
+import com.intellij.execution.process.ProcessOutput
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.Key
 import com.intellij.openapi.vfs.VirtualFile
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import java.io.File
-import kotlin.coroutines.suspendCoroutine
 
 @Service(Service.Level.PROJECT)
 class GitChurnService(
@@ -38,11 +37,10 @@ class GitChurnService(
             listOf(
                 "git",
                 "log",
-                "--all",
                 "-M",
                 "-C",
                 "--name-only",
-                "--format=format:",
+                "--format=",
                 format,
             )
         )
@@ -52,31 +50,21 @@ class GitChurnService(
 
 //        println("command is: ${command.commandLineString}")
 
-        withContext(Dispatchers.IO) {
-            val gitLogResult = executeCommand(command)
+        val gitLogResult = withContext(Dispatchers.IO) { executeCommand(command) }
 
-            result = OutputParser.parseGitLogOutput(project, gitLogResult.output)
-
-//            println("log: $gitLogResult")
-//            println("churn: $result")
-        }
+        result = OutputParser.parseGitLogOutput(project, gitLogResult.output)
     }
 
     private suspend fun executeCommand(command: GeneralCommandLine): GitLogResult =
-        suspendCoroutine { continuation ->
+        suspendCancellableCoroutine { continuation ->
             val processHandler = OSProcessHandler(command)
-            val buffer = StringBuilder()
+            val processOutput = ProcessOutput()
 
+            processHandler.addProcessListener(CapturingProcessAdapter(processOutput))
             processHandler.addProcessListener(object : ProcessListener {
-                override fun onTextAvailable(event: ProcessEvent, outputType: Key<*>) {
-                    if (outputType === ProcessOutputTypes.STDOUT || outputType === ProcessOutputTypes.STDERR) {
-                        buffer.append(event.text)
-                    }
-                }
-
                 override fun processTerminated(event: ProcessEvent) {
                     val result = GitLogResult(
-                        output = buffer.toString(),
+                        output = processOutput,
                         exitCode = event.exitCode
                     )
 
@@ -89,7 +77,6 @@ class GitChurnService(
 }
 
 data class GitLogResult(
-    val output: String,
+    val output: ProcessOutput,
     val exitCode: Int,
-    val isSuccess: Boolean = exitCode == 0,
 )

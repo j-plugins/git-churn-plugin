@@ -1,6 +1,8 @@
 package com.github.xepozz.git_churn
 
 import com.github.xepozz.git_churn.config.GitChurnConfigSettings
+import com.github.xepozz.git_churn.notification.NotificationUtil
+import com.intellij.execution.process.ProcessOutput
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.vfs.VirtualFile
@@ -9,12 +11,16 @@ import org.apache.commons.io.FilenameUtils
 object OutputParser {
     private val settings by lazy { GitChurnConfigSettings.getInstance() }
 
-    fun parseGitLogOutput(project: Project, output: String): GitChurnDescriptor {
+    fun parseGitLogOutput(project: Project, output: ProcessOutput): GitChurnDescriptor {
         val projectDir = project.guessProjectDir() ?: return GitChurnDescriptor.EMPTY
+        if (output.exitCode != 0) {
+            NotificationUtil.sendNotification(project, "Git Churn Error", output.stderr)
+            return GitChurnDescriptor.EMPTY
+        }
+        val stdout = output.stdout
 
-        val fileChanges = output
+        val fileChanges = stdout
             .lines()
-            .filter { it.isNotBlank() && !it.startsWith(" ") }
             .groupingBy { it }
             .eachCount()
 
